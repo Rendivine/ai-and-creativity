@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Participant Details | Creativity Lab</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header class="navbar">
+        <div class="logo">✦ Creativity Lab</div>
+        <a href="consent.html" style="text-decoration:none;color:#7663A9;">
+            ← Back
+        </a>
+    </header>
+
+    <main class="details-page">
+        <div class="details-card">
+
+            <span class="tag">LET'S GET TO KNOW YOU</span>
+
+            <h1>Participant <span>Details</span></h1>
+
+            <p class="consent-intro">
+                Please provide the following details to continue.
+            </p>
+
+            <div class="participant-code">
+                <small>YOUR DEMO PARTICIPANT CODE</small>
+                <h2 id="participantCode">Generating...</h2>
+                <p>Keep this code for your reference.</p>
+            </div>
+
+            <form id="detailsForm">
+
+                <label for="age">Age</label>
+                <input type="number" id="age" min="18" max="100"
+                    placeholder="Enter your age" required>
+
+                <label for="department">Department</label>
+                <select id="department" required>
+                    <option value="">Select your department</option>
+                    <option>Humanities</option>
+                    <option>Engineering</option>
+                    <option>Medical</option>
+                    <option>Other</option>
+                </select>
+
+                <button type="submit" class="primary-button">
+                    Continue to Creativity Lab →
+                </button>
+
+            </form>
+
+            <p class="demo-note">
+                This is a sample form. Information entered here is not
+                submitted to a research database.
+            </p>
+
+        </div>
+    </main>
+
+    <footer>
+        <h3>Creativity Lab</h3>
+        <small>AI and Creativity · Research Prototype</small>
+    </footer>
+
+    <script>
+        function generateCode() {
+            const characters = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+            let code = "";
+
+            for (let i = 0; i < 6; i++) {
+                code += characters.charAt(
+                    Math.floor(Math.random() * characters.length)
+                );
+            }
+
+            return code;
+        }
+
+        const participantCode = generateCode();
+
+        document.getElementById("participantCode").textContent =
+            participantCode;
+
+        document.getElementById("detailsForm").addEventListener("submit",
+            function(event) {
+                event.preventDefault();
+
+                const participant = {
+                    code: participantCode,
+                    age: document.getElementById("age").value,
+                    department: document.getElementById("department").value
+                };
+
+                sessionStorage.setItem(
+                    "demoParticipant",
+                    JSON.stringify(participant)
+                );
+
+                window.location.href = "activities.html";
+            }
+        );
+    </script>
+
+</body>
+</html>

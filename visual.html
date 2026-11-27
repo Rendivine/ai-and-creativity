@@ -1,0 +1,330 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Imagination | Creativity Lab</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="logo">✦ Creativity Lab</div>
+    <a href="activities.html">← Activities</a>
+</header>
+
+<main class="details-page">
+
+<div class="details-card task-card ai-task-layout">
+
+    <section class="task-main">
+
+        <span class="tag">VISUAL IMAGINATION · AI DEMO</span>
+
+        <h1>What do you <span>see?</span></h1>
+
+        <p class="consent-intro">
+            Look at this unusual shape. Let your imagination explore!
+        </p>
+
+        <div class="visual-art">
+            <svg viewBox="0 0 400 260" role="img"
+                aria-label="Abstract pastel shape">
+                <path d="M83 143 C45 90 108 32 164 65
+                C210 10 267 58 255 105
+                C330 83 354 163 295 190
+                C280 245 205 231 178 203
+                C120 244 55 205 83 143Z"
+                fill="#B9A8E8"/>
+                <circle cx="120" cy="105" r="28" fill="#F5BFD1"/>
+                <path d="M205 76 C255 55 296 95 276 133
+                C255 169 205 148 205 76Z" fill="#A8C9E8"/>
+                <circle cx="220" cy="183" r="23" fill="#F5D9A8"/>
+            </svg>
+        </div>
+
+        <div class="task-prompt">
+            <span>YOUR CHALLENGE</span>
+            <h2>What could this shape represent?</h2>
+            <p>
+                Imagine as many different objects, creatures,
+                places or things as possible. There are no wrong answers!
+            </p>
+        </div>
+
+        <div class="timer-box">
+            <span id="timerLabel">GET READY</span>
+            <h2 id="timer">00:10</h2>
+            <p id="timerMessage">Your activity will begin shortly.</p>
+        </div>
+
+        <label for="ideas">Your interpretations</label>
+
+        <textarea id="ideas" rows="8"
+            placeholder="Write your interpretations here, one per line..."
+            disabled></textarea>
+
+        <button class="primary-button" id="submitBtn" disabled>
+            Submit Activity →
+        </button>
+
+        <div id="completion" class="completion-message" hidden>
+            <h2>Wonderful imagination! ✨</h2>
+            <p id="completionMessage"></p>
+            <button class="primary-button"
+                onclick="window.location.href='activities.html'">
+                Back to Activities
+            </button>
+        </div>
+
+    </section>
+
+    <aside class="owl-panel">
+
+        <div class="owl-avatar">🦉</div>
+        <h2>Meet Ollie!</h2>
+
+        <p class="owl-intro">
+            Need inspiration? Let's explore your imagination together!
+        </p>
+
+        <div class="chat-window" id="chatWindow">
+            <div class="owl-message">
+                <strong>Ollie 🦉</strong>
+                <p>
+                    Look carefully at the shape. What does it remind you of?
+                    There are so many possibilities!
+                </p>
+            </div>
+        </div>
+
+        <div class="chat-input-area">
+            <input type="text" id="userMessage"
+                placeholder="Ask Ollie..." disabled>
+            <button class="primary-button" id="sendBtn" disabled>
+                Send
+            </button>
+        </div>
+
+        <p class="demo-note">
+            Sample rule-based assistant, not connected to a real AI model.
+        </p>
+
+    </aside>
+
+</div>
+</main>
+
+<footer>
+    <h3>Creativity Lab</h3>
+    <small>AI and Creativity · Research Prototype</small>
+</footer>
+
+<script>
+
+const PREPARATION_SECONDS = 10;
+const TASK_MINUTES = 7;
+
+let countdown = PREPARATION_SECONDS;
+let timeLeft = TASK_MINUTES * 60;
+let taskStarted = false;
+let taskFinished = false;
+let timerInterval;
+
+const timer = document.getElementById("timer");
+const timerLabel = document.getElementById("timerLabel");
+const timerMessage = document.getElementById("timerMessage");
+
+const ideas = document.getElementById("ideas");
+const submitBtn = document.getElementById("submitBtn");
+const userMessage = document.getElementById("userMessage");
+const sendBtn = document.getElementById("sendBtn");
+const chatWindow = document.getElementById("chatWindow");
+const completion = document.getElementById("completion");
+
+const records = {
+    task: "Visual Imagination",
+    taskOpenedAt: new Date().toISOString(),
+    taskStartedAt: null,
+    firstResponseAt: null,
+    submittedAt: null,
+    taskDurationSeconds: null,
+    responseCount: 0,
+    aiInteractions: []
+};
+
+function displayTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remaining = seconds % 60;
+
+    timer.textContent =
+        String(minutes).padStart(2, "0") + ":" +
+        String(remaining).padStart(2, "0");
+}
+
+const preparationInterval = setInterval(function() {
+    countdown--;
+    displayTime(countdown);
+
+    if (countdown <= 0) {
+        clearInterval(preparationInterval);
+        startTask();
+    }
+}, 1000);
+
+function startTask() {
+    taskStarted = true;
+    records.taskStartedAt = new Date().toISOString();
+
+    timerLabel.textContent = "TIME REMAINING";
+    timerMessage.textContent = "Your activity has started!";
+
+    displayTime(timeLeft);
+
+    ideas.disabled = false;
+    submitBtn.disabled = false;
+    userMessage.disabled = false;
+    sendBtn.disabled = false;
+
+    timerInterval = setInterval(function() {
+        timeLeft--;
+        displayTime(timeLeft);
+
+        if (timeLeft <= 0) {
+            finishTask("Your seven-minute activity has ended.");
+        }
+    }, 1000);
+}
+
+ideas.addEventListener("input", function() {
+    if (!records.firstResponseAt && ideas.value.trim() !== "") {
+        records.firstResponseAt = new Date().toISOString();
+    }
+});
+
+function finishTask(message) {
+    if (taskFinished) return;
+
+    taskFinished = true;
+    clearInterval(timerInterval);
+
+    records.submittedAt = new Date().toISOString();
+
+    records.taskDurationSeconds = Math.round(
+        (new Date(records.submittedAt) -
+        new Date(records.taskStartedAt)) / 1000
+    );
+
+    records.responseCount = ideas.value
+        .split("\n")
+        .filter(line => line.trim() !== "").length;
+
+    ideas.disabled = true;
+    submitBtn.disabled = true;
+    userMessage.disabled = true;
+    sendBtn.disabled = true;
+
+    timerLabel.textContent = "ACTIVITY COMPLETED";
+    timerMessage.textContent = "Thank you for participating!";
+
+    document.getElementById("completionMessage").textContent = message;
+    completion.hidden = false;
+
+    sessionStorage.setItem(
+        "visualImaginationDemo",
+        JSON.stringify({
+            records: records,
+            response: ideas.value
+        })
+    );
+
+    console.log("Visual Imagination demo record:", records);
+}
+
+submitBtn.addEventListener("click", function() {
+    if (!taskStarted || taskFinished) return;
+
+    if (ideas.value.trim() === "") {
+        alert("Please enter at least one interpretation.");
+        return;
+    }
+
+    finishTask("Your visual creativity response has been submitted!");
+});
+
+function addChatMessage(message, className) {
+    const bubble = document.createElement("div");
+    bubble.className = className;
+
+    if (className === "owl-message") {
+        const heading = document.createElement("strong");
+        heading.textContent = "Ollie 🦉";
+        bubble.appendChild(heading);
+    }
+
+    const paragraph = document.createElement("p");
+    paragraph.textContent = message;
+    bubble.appendChild(paragraph);
+
+    chatWindow.appendChild(bubble);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
+function sendMessage() {
+    const message = userMessage.value.trim();
+
+    if (!message || !taskStarted || taskFinished) return;
+
+    addChatMessage(message, "user-message");
+
+    records.aiInteractions.push({
+        message: message,
+        timestamp: new Date().toISOString()
+    });
+
+    const lower = message.toLowerCase();
+
+    const responses = [
+        "Could the shape be an animal, a landscape or perhaps an imaginary creature?",
+        "Try rotating the shape in your mind. Does it remind you of something new?",
+        "What if you imagined this shape as something from outer space?",
+        "Could two different parts of the shape represent two objects joined together?",
+        "Imagine giving this shape a completely different purpose. What might it become?",
+        "What does the outline remind you of when you look at it from another perspective?"
+    ];
+
+    let response;
+
+    if (lower.includes("animal")) {
+        response = "Wonderful! Could it be a sleeping dragon, a tiny whale or an imaginary creature? What else can you invent?";
+    } else if (lower.includes("help")) {
+        response = "Try turning the shape around in your imagination. Look for familiar outlines, objects or creatures!";
+    } else if (lower.includes("shape") || lower.includes("see")) {
+        response = "Look at its curves and smaller sections separately. Can you combine them into something unexpected?";
+    } else {
+        response = responses[Math.floor(Math.random() * responses.length)];
+    }
+
+    userMessage.value = "";
+
+    setTimeout(function() {
+        if (!taskFinished) {
+            addChatMessage(response, "owl-message");
+        }
+    }, 400);
+}
+
+sendBtn.addEventListener("click", sendMessage);
+
+userMessage.addEventListener("keydown", function(event) {
+    if (event.key === "Enter") sendMessage();
+});
+
+displayTime(countdown);
+
+</script>
+
+</body>
+</html>

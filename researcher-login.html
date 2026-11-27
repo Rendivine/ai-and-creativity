@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Researcher Login | Creativity Lab</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <div class="login-card">
+
+            <div class="login-owl">🦉</div>
+
+            <p class="login-label">PRIVATE RESEARCHER ACCESS</p>
+
+            <h1>Welcome back!</h1>
+
+            <p class="login-description">
+                Sign in to access your Creativity Lab dashboard.
+            </p>
+
+            <form id="loginForm">
+
+                <label for="password">Researcher Password</label>
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Enter your password"
+                    required
+                >
+
+                <p id="errorMessage" class="login-error"></p>
+
+                <button type="submit" class="login-button">
+                    Access Dashboard →
+                </button>
+
+            </form>
+
+            <a href="index.html" class="back-home">
+                ← Back to Homepage
+            </a>
+
+            <p class="login-note">
+                Researcher access only
+            </p>
+
+        </div>
+
+    </div>
+
+    <script>
+        const researcherPassword = "Owl2026!";
+
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const enteredPassword = document.getElementById("password").value;
+            const errorMessage = document.getElementById("errorMessage");
+
+            if (enteredPassword === researcherPassword) {
+                window.location.href = "dashboard.html";
+            } else {
+                errorMessage.textContent = "Incorrect password. Please try again.";
+            }
+        });
+    </script>
+
+</body>
+</html>

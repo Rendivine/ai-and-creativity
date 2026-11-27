@@ -1,0 +1,105 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Consent | Creativity Lab</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header class="navbar">
+        <div class="logo">✦ Creativity Lab</div>
+        <a href="welcome.html" style="text-decoration:none;color:#7663A9;">
+            ← Back
+        </a>
+    </header>
+
+    <main class="consent-page">
+
+        <div class="consent-card">
+
+            <span class="tag">BEFORE WE BEGIN</span>
+
+            <h1>Participant <span>Information & Consent</span></h1>
+
+            <p class="consent-intro">
+                Please read the following information before continuing.
+            </p>
+
+            <div class="consent-section">
+                <h3>About this research</h3>
+                <p>
+                    This demonstration introduces a proposed academic
+                    research experience exploring the relationship between
+                    Artificial Intelligence and human creativity.
+                </p>
+            </div>
+
+            <div class="consent-section">
+                <h3>Your participation</h3>
+                <p>
+                    You will be invited to complete creative activities
+                    designed to explore different aspects of creative thinking.
+                </p>
+            </div>
+
+            <div class="consent-section">
+                <h3>Privacy and confidentiality</h3>
+                <p>
+                    The proposed research website will use participant
+                    codes rather than names wherever possible. Research
+                    information will be handled confidentially.
+                </p>
+            </div>
+
+            <div class="consent-section">
+                <h3>Voluntary participation</h3>
+                <p>
+                    Participation is voluntary. You may choose not to
+                    participate. The final approved study will explain
+                    withdrawal procedures.
+                </p>
+            </div>
+
+            <div class="consent-check">
+                <input type="checkbox" id="agree">
+                <label for="agree">
+                    I have read and understood the information above.
+                    I voluntarily agree to participate in this demonstration.
+                </label>
+            </div>
+
+            <button class="primary-button" id="continueBtn" disabled
+                onclick="continueToDetails()">
+                I Agree — Continue →
+            </button>
+
+            <p class="demo-note">
+                This is a demonstration consent page, not an approved
+                consent form for actual research recruitment.
+            </p>
+
+        </div>
+
+    </main>
+
+    <script>
+        const agree = document.getElementById("agree");
+        const continueBtn = document.getElementById("continueBtn");
+
+        agree.addEventListener("change", function() {
+            continueBtn.disabled = !agree.checked;
+        });
+
+        function continueToDetails() {
+            if (agree.checked) {
+                window.location.href = "details.html";
+            }
+        }
+    </script>
+
+</body>
+</html>

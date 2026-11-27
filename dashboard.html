@@ -1,0 +1,224 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Researcher Dashboard | Creativity Lab</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body> 
+    <script>
+function logoutResearcher() {
+    window.location.href = "researcher-login.html";
+}
+</script>
+
+<header class="navbar">
+    <div class="logo">✦ Creativity Lab</div>
+
+    <div>
+        <a href="index.html">← Home</a>
+        <button onclick="logoutResearcher()" class="logout-button">
+            Logout
+        </button>
+    </div>
+</header>
+
+<main class="dashboard-page">
+
+    <section class="dashboard-heading">
+        <span class="tag">RESEARCHER AREA · DEMO</span>
+        <h1>Researcher <span>Dashboard</span></h1>
+        <p>Welcome to your creativity research overview.</p>
+        <p class="demo-note">All information below is illustrative sample data.</p>
+    </section>
+
+    <section class="dashboard-stats">
+
+        <div class="stat-card">
+            <span>PARTICIPANTS</span>
+            <h2 id="participantCount">24</h2>
+            <p>Sample participants</p>
+        </div>
+
+        <div class="stat-card">
+            <span>ACTIVITIES COMPLETED</span>
+            <h2 id="activityCount">58</h2>
+            <p>Sample completed tasks</p>
+        </div>
+
+        <div class="stat-card">
+            <span>AVERAGE TASK TIME</span>
+            <h2>05:42</h2>
+            <p>Sample duration</p>
+        </div>
+
+        <div class="stat-card">
+            <span>AI INTERACTIONS</span>
+            <h2>86</h2>
+            <p>Sample interactions</p>
+        </div>
+
+    </section>
+
+    <section class="dashboard-section">
+        <h2>Participant Records</h2>
+        <p>Illustrative participant activity records.</p>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Participant Code</th>
+                        <th>Activity</th>
+                        <th>Ideas</th>
+                        <th>Time</th>
+                        <th>AI Interactions</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody id="participantTable">
+                    <tr>
+                        <td>CL001</td>
+                        <td>Idea Explorer</td>
+                        <td>12</td>
+                        <td>06:35</td>
+                        <td>4</td>
+                        <td><span class="status-complete">Completed</span></td>
+                    </tr>
+
+                    <tr>
+                        <td>CL002</td>
+                        <td>Visual Imagination</td>
+                        <td>9</td>
+                        <td>05:48</td>
+                        <td>3</td>
+                        <td><span class="status-complete">Completed</span></td>
+                    </tr>
+
+                    <tr>
+                        <td>CL003</td>
+                        <td>Story Builder</td>
+                        <td>1</td>
+                        <td>06:12</td>
+                        <td>5</td>
+                        <td><span class="status-complete">Completed</span></td>
+                    </tr>
+
+                    <tr>
+                        <td>CL004</td>
+                        <td>Idea Explorer</td>
+                        <td>8</td>
+                        <td>04:55</td>
+                        <td>2</td>
+                        <td><span class="status-complete">Completed</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="dashboard-section">
+        <h2>Research Overview</h2>
+
+        <div class="overview-grid">
+
+            <div class="overview-card">
+                <h3>Activity Distribution</h3>
+                <div class="bar-item">
+                    <span>Idea Explorer</span>
+                    <div class="bar"><div style="width:85%"></div></div>
+                </div>
+                <div class="bar-item">
+                    <span>Visual Imagination</span>
+                    <div class="bar"><div style="width:65%"></div></div>
+                </div>
+                <div class="bar-item">
+                    <span>Story Builder</span>
+                    <div class="bar"><div style="width:55%"></div></div>
+                </div>
+            </div>
+
+            <div class="overview-card">
+                <h3>AI Usage</h3>
+                <div class="ai-stat">
+                    <span>Average interactions per task</span>
+                    <strong>3.6</strong>
+                </div>
+                <div class="ai-stat">
+                    <span>Most used assistant</span>
+                    <strong>Ollie 🦉</strong>
+                </div>
+                <div class="ai-stat">
+                    <span>Data type</span>
+                    <strong>Demo</strong>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="dashboard-section">
+        <h2>Research Data</h2>
+        <p>In the future, the approved system will allow researchers to export collected records.</p>
+
+        <button class="primary-button" id="exportBtn">
+            Export Demo CSV ↓
+        </button>
+        <p class="demo-note" id="exportMessage">
+            Downloads illustrative records only.
+        </p>
+    </section>
+
+</main>
+
+<footer>
+    <h3>Creativity Lab</h3>
+    <small>AI and Creativity · Research Prototype</small>
+</footer>
+
+<script>
+    const sampleRecords = [
+        ["CL001", "Idea Explorer", 12, "06:35", 4, "Completed"],
+        ["CL002", "Visual Imagination", 9, "05:48", 3, "Completed"],
+        ["CL003", "Story Builder", 1, "06:12", 5, "Completed"],
+        ["CL004", "Idea Explorer", 8, "04:55", 2, "Completed"]
+    ];
+
+    document.getElementById("exportBtn").addEventListener("click", function() {
+
+        const headings = [
+            "Participant Code",
+            "Activity",
+            "Ideas",
+            "Time",
+            "AI Interactions",
+            "Status"
+        ];
+
+        const csv = [headings, ...sampleRecords]
+            .map(row => row.map(value =>
+                '"' + String(value).replace(/"/g, '""') + '"'
+            ).join(","))
+            .join("\n");
+
+        const blob = new Blob([csv], {type: "text/csv;charset=utf-8;"});
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "creativity-lab-demo-records.csv";
+        link.click();
+
+        URL.revokeObjectURL(url);
+
+        document.getElementById("exportMessage").textContent =
+            "Your illustrative CSV file has been downloaded.";
+    });
+</script>
+
+</body>
+</html>

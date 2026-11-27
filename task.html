@@ -1,0 +1,373 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Idea Explorer | Creativity Lab</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="logo">✦ Creativity Lab</div>
+    <a href="activities.html">← Activities</a>
+</header>
+
+<main class="details-page">
+
+    <div class="details-card task-card ai-task-layout">
+
+        <div class="task-main">
+
+            <span class="tag">IDEA EXPLORER · AI DEMO</span>
+
+            <h1>Think beyond the <span>ordinary!</span></h1>
+
+            <div class="task-prompt">
+                <span>YOUR CREATIVE CHALLENGE</span>
+                <h2>Imagine you have a simple cardboard box.</h2>
+                <p>
+                    How many unusual and creative ways can you
+                    think of using it? Explore possibilities beyond
+                    its usual purpose.
+                </p>
+            </div>
+
+            <div class="timer-box">
+                <span id="timerLabel">PREPARING TO BEGIN</span>
+                <h2 id="timer">00:10</h2>
+                <p id="timerMessage">Your activity will begin shortly.</p>
+            </div>
+
+            <label for="ideas">Your creative ideas</label>
+
+            <textarea
+                id="ideas"
+                rows="9"
+                placeholder="Your response area will open when the countdown ends..."
+                disabled>
+            </textarea>
+
+            <button class="primary-button" id="submitBtn" disabled>
+                Submit Activity →
+            </button>
+
+            <div id="completion" class="completion-message" hidden>
+                <h2>Wonderful work! ✨</h2>
+                <p id="completionMessage"></p>
+                <button class="primary-button"
+                    onclick="window.location.href='activities.html'">
+                    Back to Activities
+                </button>
+            </div>
+
+        </div>
+
+        <aside class="owl-panel">
+
+            <div class="owl-avatar">🦉</div>
+
+            <h2>Meet Ollie!</h2>
+
+            <p class="owl-intro">
+                Your creative brainstorming companion.
+                Ask me for inspiration whenever you need it.
+            </p>
+
+            <div class="chat-window" id="chatWindow">
+                <div class="owl-message">
+                    <strong>Ollie 🦉</strong>
+                    <p>
+                        Hello! Think freely and explore your own ideas.
+                        I'm here if you need a little inspiration!
+                    </p>
+                </div>
+            </div>
+
+            <div class="chat-input-area">
+                <input
+                    type="text"
+                    id="userMessage"
+                    placeholder="Ask Ollie..."
+                    disabled>
+                <button class="primary-button" id="sendBtn" disabled>
+                    Send
+                </button>
+            </div>
+
+            <p class="demo-note">
+                Sample rule-based assistant. Not connected to a real AI model.
+            </p>
+
+        </aside>
+
+    </div>
+
+</main>
+
+<footer>
+    <h3>Creativity Lab</h3>
+    <small>AI and Creativity · Research Prototype</small>
+</footer>
+
+<script>
+    // DEMONSTRATION SETTINGS
+    const PREPARATION_SECONDS = 10;
+    const TASK_MINUTES = 7;
+
+    let countdown = PREPARATION_SECONDS;
+    let timeLeft = TASK_MINUTES * 60;
+
+    let taskStarted = false;
+    let taskFinished = false;
+    let timerInterval = null;
+
+    const timer = document.getElementById("timer");
+    const timerLabel = document.getElementById("timerLabel");
+    const timerMessage = document.getElementById("timerMessage");
+
+    const ideas = document.getElementById("ideas");
+    const submitBtn = document.getElementById("submitBtn");
+
+    const userMessage = document.getElementById("userMessage");
+    const sendBtn = document.getElementById("sendBtn");
+    const chatWindow = document.getElementById("chatWindow");
+
+    const completion = document.getElementById("completion");
+
+    // DEMONSTRATION TIMING RECORDS
+    const records = {
+        taskOpenedAt: new Date().toISOString(),
+        taskStartedAt: null,
+        firstResponseAt: null,
+        submittedAt: null,
+        taskDurationSeconds: null,
+        responseCount: 0,
+        aiInteractions: []
+    };
+
+    function displayTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+
+        timer.textContent =
+            String(minutes).padStart(2, "0") + ":" +
+            String(remainingSeconds).padStart(2, "0");
+    }
+
+    // TEN-SECOND PREPARATION COUNTDOWN
+    timerLabel.textContent = "GET READY";
+
+    const preparationInterval = setInterval(function() {
+
+        countdown--;
+        displayTime(countdown);
+
+        if (countdown <= 0) {
+            clearInterval(preparationInterval);
+            startTask();
+        }
+
+    }, 1000);
+
+    function startTask() {
+
+        taskStarted = true;
+
+        records.taskStartedAt = new Date().toISOString();
+
+        timerLabel.textContent = "TIME REMAINING";
+        timerMessage.textContent = "Your creativity challenge has started!";
+
+        displayTime(timeLeft);
+
+        ideas.disabled = false;
+        ideas.placeholder = "Write your ideas here, one per line...";
+
+        submitBtn.disabled = false;
+
+        userMessage.disabled = false;
+        sendBtn.disabled = false;
+
+        timerInterval = setInterval(function() {
+
+            timeLeft--;
+            displayTime(timeLeft);
+
+            if (timeLeft <= 0) {
+                finishTask("Your seven-minute activity has ended.");
+            }
+
+        }, 1000);
+    }
+
+    // RECORD FIRST RESPONSE
+    ideas.addEventListener("input", function() {
+
+        if (!records.firstResponseAt && ideas.value.trim() !== "") {
+            records.firstResponseAt = new Date().toISOString();
+        }
+
+    });
+
+    function finishTask(message) {
+
+        if (taskFinished) return;
+
+        taskFinished = true;
+
+        clearInterval(timerInterval);
+
+        records.submittedAt = new Date().toISOString();
+
+        records.taskDurationSeconds = Math.round(
+            (new Date(records.submittedAt) -
+            new Date(records.taskStartedAt)) / 1000
+        );
+
+        records.responseCount = ideas.value
+            .split("\n")
+            .filter(line => line.trim() !== "").length;
+
+        ideas.disabled = true;
+        submitBtn.disabled = true;
+
+        userMessage.disabled = true;
+        sendBtn.disabled = true;
+
+        timerLabel.textContent = "ACTIVITY COMPLETED";
+        timerMessage.textContent = "Thank you for participating!";
+
+        completionMessage.textContent = message;
+        completion.hidden = false;
+
+        // DEMO ONLY: TEMPORARY BROWSER STORAGE
+        sessionStorage.setItem(
+            "ideaExplorerDemo",
+            JSON.stringify({
+                records: records,
+                response: ideas.value,
+                aiInteractions: records.aiInteractions
+            })
+        );
+
+        console.log("Idea Explorer demonstration record:", records);
+    }
+
+    submitBtn.addEventListener("click", function() {
+
+        if (!taskStarted) return;
+
+        if (ideas.value.trim() === "") {
+            alert("Please enter at least one idea.");
+            return;
+        }
+
+        finishTask("Your demonstration response has been submitted!");
+    });
+
+    // OLLIE'S DEMONSTRATION CHAT
+    function sendMessage() {
+
+        const message = userMessage.value.trim();
+
+        if (message === "" || taskFinished || !taskStarted) return;
+
+        addChatMessage(message, "user-message");
+
+        records.aiInteractions.push({
+            message: message,
+            timestamp: new Date().toISOString()
+        });
+
+        const lower = message.toLowerCase();
+
+        let response;
+
+                const responseGroups = {
+    box: [
+        "What if the box became something useful in nature, like a mini greenhouse?",
+        "Imagine transforming it into a tiny theatre. What could its stage look like?",
+        "Could the box become something wearable, decorative or even interactive?",
+        "Think about changing its size or shape. What new possibilities appear?"
+    ],
+
+    idea: [
+        "Try combining two unrelated things. What surprising creation could emerge?",
+        "Imagine an idea that solves a problem nobody has thought about yet.",
+        "What would your idea look like in a world 100 years from now?",
+        "Could you turn an ordinary object into something completely unexpected?"
+    ],
+
+    help: [
+        "Start by changing the object's usual purpose. What else could it do?",
+        "Think about nature, art, technology and everyday life. Can you connect two of them?",
+        "Try imagining something impossible first. Then see whether you can make it practical.",
+        "What is the strangest possibility you can think of?"
+    ],
+
+    general: [
+        "That's an interesting direction! What could happen if you developed it further?",
+        "What if you looked at the same problem from another person's perspective?",
+        "Could you combine that thought with something completely unrelated?",
+        "What is one possibility you haven't explored yet?",
+        "Interesting! Can you think of a more unusual version of that idea?"
+    ]
+};
+
+let group = "general";
+
+if (lower.includes("box")) {
+    group = "box";
+} else if (lower.includes("idea") || lower.includes("creative")) {
+    group = "idea";
+} else if (lower.includes("help")) {
+    group = "help";
+}
+
+const options = responseGroups[group];
+response = options[Math.floor(Math.random() * options.length)];
+
+
+        userMessage.value = "";
+
+        setTimeout(function() {
+            addChatMessage(response, "owl-message");
+        }, 400);
+    }
+
+    function addChatMessage(message, className) {
+
+        const bubble = document.createElement("div");
+        bubble.className = className;
+
+        if (className === "owl-message") {
+            const heading = document.createElement("strong");
+            heading.textContent = "Ollie 🦉";
+            bubble.appendChild(heading);
+        }
+
+        const paragraph = document.createElement("p");
+        paragraph.textContent = message;
+
+        bubble.appendChild(paragraph);
+        chatWindow.appendChild(bubble);
+
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    sendBtn.addEventListener("click", sendMessage);
+
+    userMessage.addEventListener("keydown", function(event) {
+        if (event.key === "Enter") sendMessage();
+    });
+
+    // Initial display
+    displayTime(countdown);
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,121 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Creativity Space | Creativity Lab</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header class="navbar">
+        <div class="logo">✦ Creativity Lab</div>
+        <a href="activities.html">← Back to Activities</a>
+    </header>
+
+    <main class="details-page">
+
+        <div class="details-card task-card">
+
+            <div class="owl-avatar">🦉</div>
+
+            <h1>Meet your <span>Creative Owl!</span></h1>
+
+            <p class="consent-intro">
+                Your little brainstorming companion is here to help
+                you explore new ideas.
+            </p>
+
+            <div class="chat-window" id="chatWindow">
+                <div class="owl-message">
+                    <strong>Ollie 🦉</strong>
+                    <p>Hello, creative mind! What shall we imagine today?</p>
+                </div>
+            </div>
+
+            <div class="chat-input-area">
+                <input
+                    type="text"
+                    id="userMessage"
+                    placeholder="Type your message..."
+                >
+
+                <button class="primary-button" id="sendBtn">
+                    Send
+                </button>
+            </div>
+
+            <p class="demo-note">
+                This is a demonstration assistant using sample responses,
+                not a connected AI model.
+            </p>
+
+        </div>
+
+    </main>
+
+    <footer>
+        <h3>Creativity Lab</h3>
+        <small>AI and Creativity · Research Prototype</small>
+    </footer>
+
+    <script>
+        const chatWindow = document.getElementById("chatWindow");
+        const userMessage = document.getElementById("userMessage");
+        const sendBtn = document.getElementById("sendBtn");
+
+        function sendMessage() {
+            const message = userMessage.value.trim();
+
+            if (message === "") return;
+
+            const userBubble = document.createElement("div");
+            userBubble.className = "user-message";
+            userBubble.textContent = message;
+            chatWindow.appendChild(userBubble);
+
+            userMessage.value = "";
+
+            const owlBubble = document.createElement("div");
+            owlBubble.className = "owl-message";
+
+            const heading = document.createElement("strong");
+            heading.textContent = "Ollie 🦉";
+
+            const reply = document.createElement("p");
+
+            const responses = [
+                "That's an interesting thought! What other possibilities can you imagine?",
+                "Wonderful! Try looking at the idea from a completely different perspective.",
+                "What if you combined that idea with something unexpected?",
+                "I love your imagination! Can you think of three more possibilities?",
+                "Let's explore that further. What is one unusual way to develop your idea?"
+            ];
+
+            reply.textContent =
+                responses[Math.floor(Math.random() * responses.length)];
+
+            owlBubble.appendChild(heading);
+            owlBubble.appendChild(reply);
+
+            setTimeout(function() {
+                chatWindow.appendChild(owlBubble);
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+            }, 400);
+
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        sendBtn.addEventListener("click", sendMessage);
+
+        userMessage.addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        });
+    </script>
+
+</body>
+</html>

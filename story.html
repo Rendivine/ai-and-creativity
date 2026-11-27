@@ -1,0 +1,334 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Story Builder | Creativity Lab</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="logo">✦ Creativity Lab</div>
+    <a href="activities.html">← Activities</a>
+</header>
+
+<main class="details-page">
+
+<div class="details-card task-card ai-task-layout">
+
+    <section class="task-main">
+
+        <span class="tag">STORY BUILDER · AI DEMO</span>
+
+        <h1>Once upon a <span>possibility...</span></h1>
+
+        <p class="consent-intro">
+            Every great story begins with imagination.
+            Now it's your turn!
+        </p>
+
+        <div class="story-prompt">
+            <div class="story-emoji">🌙 🗝️ 🦋</div>
+
+            <h2>Your story begins here...</h2>
+
+            <p>
+                One evening, you discover a mysterious golden key
+                underneath your pillow. When you touch it, a tiny
+                glowing butterfly appears and whispers:
+            </p>
+
+            <blockquote>
+                "You are the only person who can unlock the forgotten world."
+            </blockquote>
+
+            <p>
+                What happens next? Where does the key take you?
+            </p>
+        </div>
+
+        <div class="timer-box">
+            <span id="timerLabel">GET READY</span>
+            <h2 id="timer">00:10</h2>
+            <p id="timerMessage">Your activity will begin shortly.</p>
+        </div>
+
+        <label for="storyText">Your story</label>
+
+        <textarea id="storyText" rows="10"
+            placeholder="Let your imagination take over..."
+            disabled></textarea>
+
+        <button class="primary-button" id="submitBtn" disabled>
+            Submit Story →
+        </button>
+
+        <div id="completion" class="completion-message" hidden>
+            <h2>What a wonderful adventure! ✨</h2>
+            <p id="completionMessage"></p>
+
+            <button class="primary-button"
+                onclick="window.location.href='activities.html'">
+                Back to Activities
+            </button>
+        </div>
+
+    </section>
+
+    <aside class="owl-panel">
+
+        <div class="owl-avatar">🦉</div>
+
+        <h2>Meet Ollie!</h2>
+
+        <p class="owl-intro">
+            Need inspiration for your story?
+            Let's explore possibilities together!
+        </p>
+
+        <div class="chat-window" id="chatWindow">
+            <div class="owl-message">
+                <strong>Ollie 🦉</strong>
+                <p>
+                    What might be behind the forgotten world's door?
+                    A magical kingdom, an underwater city or something
+                    nobody has ever imagined?
+                </p>
+            </div>
+        </div>
+
+        <div class="chat-input-area">
+            <input type="text" id="userMessage"
+                placeholder="Ask Ollie..." disabled>
+
+            <button class="primary-button" id="sendBtn" disabled>
+                Send
+            </button>
+        </div>
+
+        <p class="demo-note">
+            Sample rule-based assistant, not connected to a real AI model.
+        </p>
+
+    </aside>
+
+</div>
+</main>
+
+<footer>
+    <h3>Creativity Lab</h3>
+    <small>AI and Creativity · Research Prototype</small>
+</footer>
+
+<script>
+
+const PREPARATION_SECONDS = 10;
+const TASK_MINUTES = 7;
+
+let countdown = PREPARATION_SECONDS;
+let timeLeft = TASK_MINUTES * 60;
+let taskStarted = false;
+let taskFinished = false;
+let timerInterval;
+
+const timer = document.getElementById("timer");
+const timerLabel = document.getElementById("timerLabel");
+const timerMessage = document.getElementById("timerMessage");
+
+const storyText = document.getElementById("storyText");
+const submitBtn = document.getElementById("submitBtn");
+
+const userMessage = document.getElementById("userMessage");
+const sendBtn = document.getElementById("sendBtn");
+const chatWindow = document.getElementById("chatWindow");
+const completion = document.getElementById("completion");
+
+const records = {
+    task: "Story Builder",
+    taskOpenedAt: new Date().toISOString(),
+    taskStartedAt: null,
+    firstResponseAt: null,
+    submittedAt: null,
+    taskDurationSeconds: null,
+    aiInteractions: []
+};
+
+function displayTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remaining = seconds % 60;
+
+    timer.textContent =
+        String(minutes).padStart(2, "0") + ":" +
+        String(remaining).padStart(2, "0");
+}
+
+// Preparation countdown
+const preparationInterval = setInterval(function() {
+    countdown--;
+    displayTime(countdown);
+
+    if (countdown <= 0) {
+        clearInterval(preparationInterval);
+        startTask();
+    }
+}, 1000);
+
+// Start the seven-minute activity
+function startTask() {
+    taskStarted = true;
+    records.taskStartedAt = new Date().toISOString();
+
+    timerLabel.textContent = "TIME REMAINING";
+    timerMessage.textContent = "Your storytelling challenge has started!";
+
+    displayTime(timeLeft);
+
+    storyText.disabled = false;
+    submitBtn.disabled = false;
+    userMessage.disabled = false;
+    sendBtn.disabled = false;
+
+    timerInterval = setInterval(function() {
+        timeLeft--;
+        displayTime(timeLeft);
+
+        if (timeLeft <= 0) {
+            finishTask("Your seven-minute storytelling activity has ended.");
+        }
+    }, 1000);
+}
+
+// Record first response
+storyText.addEventListener("input", function() {
+    if (!records.firstResponseAt && storyText.value.trim() !== "") {
+        records.firstResponseAt = new Date().toISOString();
+    }
+});
+
+// Complete activity
+function finishTask(message) {
+    if (taskFinished) return;
+
+    taskFinished = true;
+    clearInterval(timerInterval);
+
+    records.submittedAt = new Date().toISOString();
+
+    records.taskDurationSeconds = Math.round(
+        (new Date(records.submittedAt) -
+        new Date(records.taskStartedAt)) / 1000
+    );
+
+    storyText.disabled = true;
+    submitBtn.disabled = true;
+    userMessage.disabled = true;
+    sendBtn.disabled = true;
+
+    timerLabel.textContent = "ACTIVITY COMPLETED";
+    timerMessage.textContent = "Thank you for participating!";
+
+    document.getElementById("completionMessage").textContent = message;
+    completion.hidden = false;
+
+    sessionStorage.setItem(
+        "storyBuilderDemo",
+        JSON.stringify({
+            records: records,
+            response: storyText.value
+        })
+    );
+
+    console.log("Story Builder demo record:", records);
+}
+
+submitBtn.addEventListener("click", function() {
+    if (!taskStarted || taskFinished) return;
+
+    if (storyText.value.trim() === "") {
+        alert("Please write your story first.");
+        return;
+    }
+
+    finishTask("Your story has been submitted successfully!");
+});
+
+// Chat messages
+function addChatMessage(message, className) {
+    const bubble = document.createElement("div");
+    bubble.className = className;
+
+    if (className === "owl-message") {
+        const heading = document.createElement("strong");
+        heading.textContent = "Ollie 🦉";
+        bubble.appendChild(heading);
+    }
+
+    const paragraph = document.createElement("p");
+    paragraph.textContent = message;
+    bubble.appendChild(paragraph);
+
+    chatWindow.appendChild(bubble);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
+// Ollie's demonstration responses
+function sendMessage() {
+    const message = userMessage.value.trim();
+
+    if (!message || !taskStarted || taskFinished) return;
+
+    addChatMessage(message, "user-message");
+
+    records.aiInteractions.push({
+        message: message,
+        timestamp: new Date().toISOString()
+    });
+
+    const lower = message.toLowerCase();
+
+    const responses = [
+        "What if the forgotten world has a completely different sky? What might it look like?",
+        "Imagine the butterfly has a secret. What could it be hiding?",
+        "Could your main character meet someone unexpected along the journey?",
+        "What if the golden key opens a door that leads to a different time?",
+        "Think about giving your story an unexpected twist. What might surprise the reader?"
+    ];
+
+    let response;
+
+    if (lower.includes("ending")) {
+        response = "What if the ending reveals that the forgotten world was connected to the character's own past?";
+    } else if (lower.includes("character")) {
+        response = "Your character could be a curious explorer, a talking animal or someone who discovers a hidden ability. What makes your character unique?";
+    } else if (lower.includes("butterfly")) {
+        response = "Perhaps the butterfly is a messenger, a guardian or even the ruler of the forgotten world. What secret might it carry?";
+    } else if (lower.includes("help")) {
+        response = "Try imagining what your character sees, hears and feels after entering the forgotten world. What happens first?";
+    } else {
+        response = responses[Math.floor(Math.random() * responses.length)];
+    }
+
+    userMessage.value = "";
+
+    setTimeout(function() {
+        if (!taskFinished) {
+            addChatMessage(response, "owl-message");
+        }
+    }, 400);
+}
+
+sendBtn.addEventListener("click", sendMessage);
+
+userMessage.addEventListener("keydown", function(event) {
+    if (event.key === "Enter") sendMessage();
+});
+
+displayTime(countdown);
+
+</script>
+
+</body>
+</html>
